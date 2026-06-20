@@ -28,6 +28,9 @@
 #include <KActionMenu>
 #include <KEditToolBar>
 #include <KLocalizedString>
+#include "settings/kmailsettings.h"
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/MessageFlags>
 #include <KMessageBox>
 #include <KStandardAction>
 #include <KStandardShortcut>
@@ -122,6 +125,19 @@ void KMReaderMainWin::initKMReaderMainWin()
     connect(mReaderWin, &KMReaderWin::showNextMessage, this, &KMReaderMainWin::showNextMessage);
 }
 
+void KMReaderMainWin::closeEvent(QCloseEvent *e)
+{
+    if (mMsg.isValid() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
+        if (KMailSettings::self()->markAsReadOnClose() || (KMailSettings::self()->askToMarkAsReadOnClose() && KMessageBox::questionTwoActions(this, i18n("Do you want to mark this message as read?"), i18n("Mark as Read"), KStandardGuiItem::yes(), KStandardGuiItem::no()) == KMessageBox::PrimaryAction)) {
+            mMsg.setFlag(Akonadi::MessageFlags::Seen);
+            auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
+            modifyJob->disableRevisionCheck();
+            modifyJob->setIgnorePayload(true);
+        }
+    }
+    SecondaryWindow::closeEvent(e);
+}
+
 KMReaderMainWin::~KMReaderMainWin()
 {
     KConfigGroup grp(KSharedConfig::openConfig(QStringLiteral("kmail2rc"))->group(QStringLiteral("Separate Reader Window")));
@@ -195,6 +211,13 @@ void KMReaderMainWin::showMessage(const QString &encoding, const Akonadi::Item &
     QAction *moveToTrash = actionCollection()->action(QStringLiteral("move_to_trash"));
     KMail::Util::setActionTrashOrDelete(moveToTrash, isInTrashFolder);
     updateActions();
+
+    if (mMsg.isValid() && KMailSettings::self()->markAsReadOnOpen() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
+        mMsg.setFlag(Akonadi::MessageFlags::Seen);
+        auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
+        modifyJob->disableRevisionCheck();
+        modifyJob->setIgnorePayload(true);
+    }
 }
 
 void KMReaderMainWin::updateButtons()
@@ -257,6 +280,13 @@ void KMReaderMainWin::initializeMessage(const std::shared_ptr<KMime::Message> &m
     mTrashAction->setEnabled(false);
     mAkonadiStandardActionManager->setItems({mMsg});
     updateActions();
+
+    if (mMsg.isValid() && KMailSettings::self()->markAsReadOnOpen() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
+        mMsg.setFlag(Akonadi::MessageFlags::Seen);
+        auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
+        modifyJob->disableRevisionCheck();
+        modifyJob->setIgnorePayload(true);
+    }
 }
 
 void KMReaderMainWin::showMessage(const QString &encoding, const std::shared_ptr<KMime::Message> &message)

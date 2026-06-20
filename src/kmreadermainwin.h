@@ -75,6 +75,10 @@ public:
                           bool uniqueContactFound,
                           const WebEngineViewer::WebHitTestResult &result);
     void showAndActivateWindow();
+
+protected:
+    void closeEvent(QCloseEvent *e) override;
+
 public Q_SLOTS:
     void slotForwardInlineMsg();
     void slotForwardAttachedMessage();

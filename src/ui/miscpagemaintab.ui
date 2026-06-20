@@ -43,8 +43,21 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <widget class="QWidget" name="mOnStartupOpenFolder" native="true"/>
+     </item>
+     <item row="8" column="0" colspan="2">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="mEnterFolderLabel">
@@ -161,7 +174,28 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="4" column="0" colspan="2">
+      <widget class="QCheckBox" name="kcfg_MarkAsReadOnOpen">
+       <property name="text">
+        <string>Automatically mark as read when opening in a new window</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="2">
+      <widget class="QCheckBox" name="kcfg_MarkAsReadOnClose">
+       <property name="text">
+        <string>Automatically mark as read when closing a message open in its own window</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <widget class="QCheckBox" name="kcfg_AskToMarkAsReadOnClose">
+       <property name="text">
+        <string>Ask to mark as read when closing the message window</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
       <widget class="QCheckBox" name="kcfg_StartSpecificFolderAtStartup">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
