@@ -63,6 +63,12 @@ MiscPageFolderTab::MiscPageFolderTab(QWidget *parent)
     connect(mMMTab.mDelayedMarkTime, &QSpinBox::valueChanged, this, &MiscPageFolderTab::slotEmitChanged);
     connect(mMMTab.mDelayedMarkAsRead, &QAbstractButton::toggled, mMMTab.mDelayedMarkTime, &QWidget::setEnabled);
     connect(mMMTab.mDelayedMarkAsRead, &QAbstractButton::toggled, this, &ConfigModuleTab::slotEmitChanged);
+    connect(mMMTab.kcfg_MarkAsReadOnOpen, &QAbstractButton::toggled, this, &ConfigModuleTab::slotEmitChanged);
+    connect(mMMTab.kcfg_MarkAsReadOnClose, &QAbstractButton::toggled, this, &ConfigModuleTab::slotEmitChanged);
+    connect(mMMTab.kcfg_MarkAsReadOnClose, &QAbstractButton::toggled, mMMTab.kcfg_AskToMarkAsReadOnClose, [this](bool checked) {
+        mMMTab.kcfg_AskToMarkAsReadOnClose->setDisabled(checked);
+    });
+    connect(mMMTab.kcfg_AskToMarkAsReadOnClose, &QAbstractButton::toggled, this, &ConfigModuleTab::slotEmitChanged);
     connect(mOnStartupOpenFolder, &MailCommon::FolderRequester::folderChanged, this, &MiscPageFolderTab::slotEmitChanged);
     connect(mMMTab.kcfg_StartSpecificFolderAtStartup, &QCheckBox::toggled, mOnStartupOpenFolder, &MailCommon::FolderRequester::setEnabled);
 }
@@ -71,6 +77,10 @@ void MiscPageFolderTab::doLoadFromGlobalSettings()
 {
     loadWidget(mMMTab.mDelayedMarkAsRead, MessageViewer::MessageViewerSettings::self()->delayedMarkAsReadItem());
     loadWidget(mMMTab.mDelayedMarkTime, MessageViewer::MessageViewerSettings::self()->delayedMarkTimeItem());
+    loadWidget(mMMTab.kcfg_MarkAsReadOnOpen, KMailSettings::self()->markAsReadOnOpenItem());
+    loadWidget(mMMTab.kcfg_MarkAsReadOnClose, KMailSettings::self()->markAsReadOnCloseItem());
+    loadWidget(mMMTab.kcfg_AskToMarkAsReadOnClose, KMailSettings::self()->askToMarkAsReadOnCloseItem());
+    mMMTab.kcfg_AskToMarkAsReadOnClose->setDisabled(mMMTab.kcfg_MarkAsReadOnClose->isChecked());
     mOnStartupOpenFolder->setEnabled(KMailSettings::self()->startSpecificFolderAtStartup());
 
     doLoadOther();
@@ -96,6 +106,9 @@ void MiscPageFolderTab::save()
 
     saveCheckBox(mMMTab.mDelayedMarkAsRead, MessageViewer::MessageViewerSettings::self()->delayedMarkAsReadItem());
     saveSpinBox(mMMTab.mDelayedMarkTime, MessageViewer::MessageViewerSettings::self()->delayedMarkTimeItem());
+    saveCheckBox(mMMTab.kcfg_MarkAsReadOnOpen, KMailSettings::self()->markAsReadOnOpenItem());
+    saveCheckBox(mMMTab.kcfg_MarkAsReadOnClose, KMailSettings::self()->markAsReadOnCloseItem());
+    saveCheckBox(mMMTab.kcfg_AskToMarkAsReadOnClose, KMailSettings::self()->askToMarkAsReadOnCloseItem());
 }
 
 MiscPageInviteTab::MiscPageInviteTab(QWidget *parent)

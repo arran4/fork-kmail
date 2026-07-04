@@ -59,6 +59,19 @@
         <default>false</default>
       </entry>
 
+      <entry name="MarkAsReadOnOpen" type="Bool">
+        <label>Automatically mark as read when opening in a new window</label>
+        <default>false</default>
+      </entry>
+      <entry name="MarkAsReadOnClose" type="Bool">
+        <label>Automatically mark as read when closing a message open in its own window</label>
+        <default>false</default>
+      </entry>
+      <entry name="AskToMarkAsReadOnClose" type="Bool">
+        <label>Ask to mark as read when closing the message window</label>
+        <default>false</default>
+      </entry>
+
 
       <entry name="SendOnCheck"  type="Enum">
         <label>Send queued mail on mail check</label>
