@@ -125,14 +125,21 @@ void KMReaderMainWin::initKMReaderMainWin()
     connect(mReaderWin, &KMReaderWin::showNextMessage, this, &KMReaderMainWin::showNextMessage);
 }
 
+void KMReaderMainWin::markAsRead()
+{
+    if (mMsg.isValid() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
+        mMsg.setFlag(Akonadi::MessageFlags::Seen);
+        auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
+        modifyJob->disableRevisionCheck();
+        modifyJob->setIgnorePayload(true);
+    }
+}
+
 void KMReaderMainWin::closeEvent(QCloseEvent *e)
 {
     if (mMsg.isValid() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
         if (KMailSettings::self()->markAsReadOnClose() || (KMailSettings::self()->askToMarkAsReadOnClose() && KMessageBox::questionTwoActions(this, i18n("Do you want to mark this message as read?"), i18n("Mark as Read"), KStandardGuiItem::yes(), KStandardGuiItem::no()) == KMessageBox::PrimaryAction)) {
-            mMsg.setFlag(Akonadi::MessageFlags::Seen);
-            auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
-            modifyJob->disableRevisionCheck();
-            modifyJob->setIgnorePayload(true);
+            markAsRead();
         }
     }
     SecondaryWindow::closeEvent(e);
@@ -212,11 +219,8 @@ void KMReaderMainWin::showMessage(const QString &encoding, const Akonadi::Item &
     KMail::Util::setActionTrashOrDelete(moveToTrash, isInTrashFolder);
     updateActions();
 
-    if (mMsg.isValid() && KMailSettings::self()->markAsReadOnOpen() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
-        mMsg.setFlag(Akonadi::MessageFlags::Seen);
-        auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
-        modifyJob->disableRevisionCheck();
-        modifyJob->setIgnorePayload(true);
+    if (KMailSettings::self()->markAsReadOnOpen()) {
+        markAsRead();
     }
 }
 
@@ -281,11 +285,8 @@ void KMReaderMainWin::initializeMessage(const std::shared_ptr<KMime::Message> &m
     mAkonadiStandardActionManager->setItems({mMsg});
     updateActions();
 
-    if (mMsg.isValid() && KMailSettings::self()->markAsReadOnOpen() && !mMsg.hasFlag(Akonadi::MessageFlags::Seen)) {
-        mMsg.setFlag(Akonadi::MessageFlags::Seen);
-        auto modifyJob = new Akonadi::ItemModifyJob(mMsg);
-        modifyJob->disableRevisionCheck();
-        modifyJob->setIgnorePayload(true);
+    if (KMailSettings::self()->markAsReadOnOpen()) {
+        markAsRead();
     }
 }
 

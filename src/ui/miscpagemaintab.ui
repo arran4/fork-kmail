@@ -46,19 +46,6 @@
      <item row="7" column="1">
       <widget class="QWidget" name="mOnStartupOpenFolder" native="true"/>
      </item>
-     <item row="8" column="0" colspan="2">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="mEnterFolderLabel">
        <property name="sizePolicy">

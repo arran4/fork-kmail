@@ -79,6 +79,9 @@ public:
 protected:
     void closeEvent(QCloseEvent *e) override;
 
+private:
+    void markAsRead();
+
 public Q_SLOTS:
     void slotForwardInlineMsg();
     void slotForwardAttachedMessage();
